@@ -1,6 +1,6 @@
 <template>
-    <div style="background-color:green; width:400px; text-align:center;margin:0 auto;" class='t'>
-      <h1 style="color:#fff">选择你最喜欢的运动</h1>
+    <div style="background-color:green; width:500px; text-align:center;margin:0 auto;" class='t'>
+      <h1 style="color:#fff;padding-top: 20px;">选择你最喜欢的运动</h1>
       <button class="button" v-for="sport in sports" :key="sport">{{ sport }}</button>
     </div>
   </template>
@@ -14,7 +14,7 @@
   
   <style scoped>
   .button {
-    background-color: green;
+    background-color: rgba(136, 138, 136, 0.774);
     color: white;
     padding: 10px 20px;
     margin: 5px;
@@ -26,8 +26,8 @@
     font-weight: bold;
     color: red;
   }
-  t{
-    
+  .t{
+    border-radius: 8px;
   }
   </style>
   
