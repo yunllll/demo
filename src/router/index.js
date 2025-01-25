@@ -3,12 +3,12 @@ import web2Rank from '../views/web2Rank.vue'
 
 const routes = [
   {
-    path: '/',
+    path: '/web2Rank',
     name: 'web2Rank',
     component: web2Rank
   },
   {
-    path: '/index',
+    path: '/',
     name: 'index',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
@@ -21,9 +21,9 @@ const routes = [
     component: () => import('../views/run.vue')
   },
   {
-    path: '/t',
-    name: 't',
-    component: () => import('../views/t.vue')
+    path: '/calcloan',
+    name: 'calcloan',
+    component: () => import('../views/CalcLoan.vue')
   }
 ]
 
