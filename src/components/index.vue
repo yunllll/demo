@@ -35,7 +35,7 @@
             <el-container>
                 <el-header style="padding-left: 40px;padding-right: 40px;">
                     <el-breadcrumb :separator-icon="ArrowRight">
-                        <el-breadcrumb-item :to="{ path: '/xiTong' }"><el-icon @click="handleCollapse">
+                        <el-breadcrumb-item :to="{ path: '/index' }"><el-icon @click="handleCollapse">
                                 <Fold v-if="!isCollapse" />
                                 <Expand v-else />
                             </el-icon><span style="margin-left: 10px;">Try首页</span></el-breadcrumb-item>
@@ -100,7 +100,7 @@ const users = ref([]);
 onMounted(() => {
     // 在组件挂载后执行的代码
     // fetchData();
-    axios.get('http://localhost:9090/user/inquire').then(res=>{
+    axios.get('').then(res=>{
         console.log(res.data)
         users.value = res.data.data
     })
@@ -109,7 +109,7 @@ onMounted(() => {
 // 定义 fetchData 函数
 const fetchData = async () => {
     try {
-        const response = await axios.get('http://localhost:9090/user/inquire'); // 替换为你的 API 地址
+        const response = await axios.get(''); // 替换为你的 API 地址
         console.log(response.data); // 处理返回的数据
     } catch (error) {
         console.error('Error fetching data:', error);
