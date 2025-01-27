@@ -8,7 +8,7 @@ const routes = [
     component: web2Rank
   },
   {
-    path: '/',
+    path: '/index',
     name: 'index',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
@@ -19,6 +19,11 @@ const routes = [
     path: '/run',
     name: 'run',
     component: () => import('../views/run.vue')
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../components/login.vue')
   },
   {
     path: '/calcloan',
