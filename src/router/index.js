@@ -26,6 +26,11 @@ const routes = [
     component: () => import('../components/login.vue')
   },
   {
+    path: '/sign',
+    name: 'sign',
+    component: () => import('../components/sign.vue')
+  },
+  {
     path: '/calcloan',
     name: 'calcloan',
     component: () => import('../views/CalcLoan.vue')

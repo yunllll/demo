@@ -7,9 +7,9 @@
             </div>
             <div style="flex: 1;display: flex;align-items: center;justify-content: center;">
                 <el-form :model="user" style="width: 80%;position: relative;">
-                    <div style="font-size: 20px; font-weight: bold;margin-bottom: 20px;">欢迎登录帮忙贷</div>
+                    <div style="font-size: 20px; font-weight: bold;margin-bottom: 20px;">欢迎注册帮忙贷</div>
                     <el-form-item prop="username">
-                        <el-input size="medium" placeholder="请输入账号" v-model="user.username">
+                        <el-input size="medium" placeholder="账号名" v-model="user.username">
                             <template #prefix>
                                 <el-icon>
                                     <User />
@@ -26,15 +26,17 @@
                             </template>
                         </el-input>
                     </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" style="width: 100%;" @click="login">登录</el-button>
-                        <Vcode :show="isShow" @success="handleSuccess" @close="close" @fail="fail" :imgs="[Img]"></Vcode>
+                    <el-form-item prop="confirmPassword">
+                        <el-input size="medium" placeholder="再次输入密码" v-model="user.confirmPassword" show-password>
+                            <template #prefix>
+                                <el-icon>
+                                    <Lock />
+                                </el-icon>
+                            </template>
+                        </el-input>
                     </el-form-item>
                     <el-form-item>
-                        <div style="display: flex;justify-content: space-between;width: 100%;">
-                            <div>还没有账号？请 <router-link to="/sign" style="color: #0f9876; cursor: pointer;">注册</router-link></div>
-                            <div><span style="color: #0f9876;cursor: pointer;"@click="forget">忘记密码</span></div>
-                        </div>
+                        <el-button type="primary" style="width: 100%;" @click="register">注册</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -45,71 +47,57 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { ElMessage } from 'element-plus';
-import { useRouter } from 'vue-router';
 import axios from 'axios'; // 引入 axios
+import { useRouter } from 'vue-router';
 
-// 自定义背景图
-import Img from '@/assets/AnKe.jpg';
-import Vcode from 'vue3-puzzle-vcode';
+const $router = useRouter();
 
 const user = reactive({
     username: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
 });
 
-const isShow = ref(false);
-const $router = useRouter();
-
-// 登录
-const login = async () => {
+// 注册
+const register = async () => {
     // 检查用户名和密码是否为空
-    if (!user.username || !user.password) {
+    if (!user.username || !user.password || !user.confirmPassword) {
         ElMessage.warning('请先输入账号和密码');
         return; // 终止函数执行
     }
 
-    isShow.value = true; // 显示验证码
-    console.log(user);
+    // 检查密码是否一致
+    if (user.password !== user.confirmPassword) {
+        ElMessage.warning('两次输入的密码不一致');
+        return;
+    }
+
+    // 检查密码复杂性
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    if (!passwordPattern.test(user.password)) {
+        ElMessage.warning('密码必须包含大小写字母、数字，并且至少6位');
+        return;
+    }
+
     try {
-        const response = await axios.post('http://localhost:3001/api/login', {
+        const response = await axios.post('http://localhost:3001/api/register', {
             username: user.username,
             password: user.password
         });
 
-        // 登录成功，显示消息
+        // 注册成功，显示消息
         ElMessage.success(response.data.message);
+        // 重定向到登录页面
+        $router.push('/login');
     } catch (error) {
         if (error.response) {
             // 处理错误响应
             ElMessage.error(error.response.data.message);
-            isShow.value = false;
         } else {
-            ElMessage.error('登录失败，请重试');
+            ElMessage.error('注册失败，请重试');
         }
     }
 };
-
-// 用户通过了验证
-const handleSuccess = (msg) => {
-    isShow.value = false; // 隐藏验证码模态框
-    console.log('验证通过: ' + msg);
-    // 跳转到首页
-    $router.push('/index');
-};
-
-// 用户点击遮罩层，关闭模态框
-const close = () => {
-    isShow.value = false;
-};
-
-// 用户验证失败
-const fail = () => {
-    console.log('验证失败');
-};
-
-const forget = () => {
-    ElMessage.info('联系后台获取！');
-}
 
 </script>
 
