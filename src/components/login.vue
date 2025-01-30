@@ -3,7 +3,7 @@
         style="height: 100vh; overflow: hidden;display: flex;justify-content: center;align-items: center;background-color: #cecece;">
         <div style="display: flex;background-color: white;width: 50%;border-radius: 5px;overflow: hidden;">
             <div style="flex: 1;">
-                <img src="@/assets/AnKe.jpg" alt="" style="width: 100%;">
+                <img src="@/assets/logo.png" alt="" style="width: 100%;">
             </div>
             <div style="flex: 1;display: flex;align-items: center;justify-content: center;">
                 <el-form :model="user" style="width: 80%;position: relative;">
@@ -49,7 +49,7 @@ import { useRouter } from 'vue-router';
 import axios from 'axios'; // 引入 axios
 
 // 自定义背景图
-import Img from '@/assets/AnKe.jpg';
+import Img from '@/assets/avatar_img/pikaqiu.png';
 import Vcode from 'vue3-puzzle-vcode';
 
 const user = reactive({
