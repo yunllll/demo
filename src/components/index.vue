@@ -68,10 +68,11 @@
                             <el-tag size="small">School</el-tag>
                         </el-descriptions-item>
                         <el-descriptions-item label="Address">
-                            
+
                         </el-descriptions-item>
                     </el-descriptions>
-                    <el-table :data="users" style="width: 50% ;margin-top: 50px;" :row-class-name="tableRowClassName"  height="250">
+                    <el-table :data="users" style="width: 50% ;margin-top: 50px;" :row-class-name="tableRowClassName"
+                        height="250">
                         <el-table-column prop="id" label="Id" width="180" />
                         <el-table-column prop="username" label="姓名" width="180" />
                         <el-table-column prop="age" label="年龄" />
@@ -84,7 +85,7 @@
 </template>
 
 <script setup>
-import { ref,onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from "axios"
 import {
     Document,
@@ -100,7 +101,7 @@ const users = ref([]);
 onMounted(() => {
     // 在组件挂载后执行的代码
     // fetchData();
-    axios.get('').then(res=>{
+    axios.get('').then(res => {
         console.log(res.data)
         users.value = res.data.data
     })
