@@ -338,28 +338,15 @@
                 </el-main>
                 <el-footer>Footer</el-footer>
                 <dataCard></dataCard>
+                <div>
+                    <div v-if="userRole === 'admin'">
+                        <h2>管理员功能</h2>
+                        <el-button @click="accessAdmin">访问管理员页面</el-button>
+                    </div>
+                    <el-button v-if="message">{{ message.message }}</el-button>
+                </div>
             </el-container>
         </el-container>
-    </div>
-    <div>
-        <h1>欢迎来到用户管理系统</h1>
-
-        <!-- 根据用户角色显示不同的功能 -->
-        <div v-if="userRole === 'admin'">
-            <h2>管理员功能</h2>
-            <button @click="accessAdmin">访问管理员页面</button>
-            <div v-if="message">{{ message }}</div> <!-- 直接使用 message -->
-        </div>
-
-        <div v-else-if="userRole === 'accountant'">
-            <h2>会计功能</h2>
-            <p>这里是会计特有的功能。</p>
-        </div>
-
-        <div v-else>
-            <h2>普通用户功能</h2>
-            <p>这里是普通用户的功能。</p>
-        </div>
     </div>
 </template>
 
