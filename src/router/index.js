@@ -34,6 +34,11 @@ const routes = [
     path: '/calcloan',
     name: 'calcloan',
     component: () => import('../views/CalcLoan.vue')
+  },
+  {
+    path: '/quanxian',
+    name: 'quanxian',
+    component: () => import('../views/quanxian.vue')
   }
 ]
 

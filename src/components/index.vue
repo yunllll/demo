@@ -171,6 +171,8 @@
                         <el-table-column label="客户资质" prop="star" />
                         <el-table-column label="添加日期" prop="date" />
                         <el-table-column label="上门状态" prop="status" />
+                        <el-table-column label="情况" prop="trait" />
+                        <el-table-column label="电话" prop="phone" />
                         <el-table-column align="right">
                             <template #header>
                                 <el-input v-model="search" style="max-width: 600px" placeholder="查找客户"
@@ -190,6 +192,22 @@
                             </template>
                         </el-table-column>
                     </el-table>
+                    <div>
+                        <h1>用户信息</h1>
+                        <input v-model="tableData.id" placeholder="输入用户ID" />
+                        <button @click="fetchUserData(tableData.id)">查询用户</button>
+                        <div v-if="queryUserData.id">
+                            <h2>用户信息</h2>
+                            <p>姓名: <input v-model="tableData.name" /></p>
+                            <p>电话: <input v-model="tableData.phone" /></p>
+                            <p>日期: <input v-model="tableData.date" /></p>
+                            <p>星级: <input v-model="tableData.star" /></p>
+                            <p>状态: <input v-model="tableData.status" /></p>
+                            <p>特征: <input v-model="tableData.trait" /></p>
+                            <button @click="updateUserData(queryUserData.id)">更新用户</button>
+                        </div>
+                    </div>
+
                     <div style="text-align: center;width: 400px;">
                         <VueDataUi component="VueUiDonut" :config="config" :dataset="dataset" />
                     </div>
@@ -323,7 +341,26 @@
             </el-container>
         </el-container>
     </div>
+    <div>
+        <h1>欢迎来到用户管理系统</h1>
 
+        <!-- 根据用户角色显示不同的功能 -->
+        <div v-if="userRole === 'admin'">
+            <h2>管理员功能</h2>
+            <button @click="accessAdmin">访问管理员页面</button>
+            <div v-if="message">{{ message }}</div> <!-- 直接使用 message -->
+        </div>
+
+        <div v-else-if="userRole === 'accountant'">
+            <h2>会计功能</h2>
+            <p>这里是会计特有的功能。</p>
+        </div>
+
+        <div v-else>
+            <h2>普通用户功能</h2>
+            <p>这里是普通用户的功能。</p>
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -338,6 +375,34 @@ import {
 } from '@element-plus/icons-vue';
 import dataCard from '../components/data_card.vue'
 import { Search } from '@element-plus/icons-vue'
+
+const userRole = localStorage.getItem('userRole');
+if (userRole === 'admin') {
+    // 显示管理员特有的功能
+} else if (userRole === 'accountant') {
+    // 显示会计特有的功能
+} else {
+    // 显示普通用户功能
+}
+
+const message = ref(''); // 用于存储响应消息
+const accessAdmin = async () => {
+    try {
+        const userRole = localStorage.getItem('userRole'); // 获取用户角色
+        const response = await axios.get('http://localhost:3001/admin', {
+            headers: {
+                'X-User-Role': userRole // 将用户角色添加到请求头
+            }
+        });
+        message.value = response.data; // 将响应数据存储到 message 中
+        console.log(message.value);
+    } catch (error) {
+        console.error('请求失败:', error);
+        message.value = '请求失败，无法访问管理员页面。'; // 确保这里是字符串
+    }
+};
+
+
 // 使用 ref 创建响应式数据
 const users = ref([]);
 
@@ -374,32 +439,25 @@ const addBreadcrumb = (label, path) => {
 };
 
 const search = ref('')
-const tableData = ref([
-    {
-        date: '2016-05-03',
-        name: 'Tom',
-        star: '1星',
-        status: '已上门',
-    },
-    {
-        date: '2016-05-02',
-        name: 'John',
-        star: '2星',
-        status: '未上门',
-    },
-    {
-        date: '2016-05-04',
-        name: 'Morgan',
-        star: '3星',
-        status: '已上门',
-    },
-    {
-        date: '2016-05-01',
-        name: 'Jessy',
-        star: '4星',
-        status: '未上门',
+const tableData = ref([]);
+const queryUserData = ref([]);
+const fetchData = async () => {
+    try {
+        const response = await axios.get('http://localhost:3001/api/alluserdata');
+        // 假设后端返回的数据格式与 tableData 结构一致
+        tableData.value = response.data.map(item => ({
+            id: item.id,
+            date: item.date2,
+            name: item.name,
+            star: `${item.star}星`,
+            status: item.status,
+            phone: item.phone,
+            trait: item.trait
+        }));
+    } catch (error) {
+        console.error('获取数据失败:', error);
     }
-])
+};
 
 const filterTableData = computed(() =>
     tableData.value.filter(
@@ -408,22 +466,88 @@ const filterTableData = computed(() =>
             data.name.toLowerCase().includes(search.value.toLowerCase())
     )
 )
+const filterQueryUserData = computed(() =>
+    queryUserData.value.filter(
+        (data) =>
+            !search.value ||
+            data.name.toLowerCase().includes(search.value.toLowerCase())
+    )
+)
 
 import dayjs from 'dayjs';
 const now = new Date(); // 当前日期
-const deleteRow = (index) => {
-    tableData.value.splice(index, 1);
-}
 
-const onAddItem = () => {
+const deleteRow = async (index) => {
+    const userId = tableData.value[index].id; // 假设每个用户记录都有一个 id 字段
+
+    try {
+        await axios.delete(`http://localhost:3001/api/deleteuserdata/${userId}`);
+        tableData.value.splice(index, 1); // 从本地数据中删除
+    } catch (error) {
+        console.error('删除失败:', error);
+    }
+};
+
+const onAddItem = async () => {
     now.setDate(now.getDate() + 1);
-    tableData.value.push({
+    const newItem = {
+        id: 888,
         date: dayjs(now).format('YYYY-MM-DD'),
         name: 'Tom',
-        star: '4星',
-        status: '未上门'
-    });
-}
+        star: 4,
+        status: 'on',
+        trait: '佩奇',
+        phone: '13165967980',
+    };
+
+    try {
+        const response = await axios.post('http://localhost:3001/api/adduserdata', newItem);
+        // 如果需要，可以将返回的用户 ID 添加到新记录中
+        newItem.id = response.data.userId; // 假设后端返回新用户的 ID
+        tableData.value.push(newItem);
+    } catch (error) {
+        console.error('添加失败:', error);
+    }
+};
+
+const fetchUserData = async (userId) => {
+    try {
+        const response = await axios.get(`http://localhost:3001/api/userdata/${userId}`);
+        const userData = response.data;
+        // 将查询到的数据填充到表单中
+        // 假设你有一个表单对象来存储用户数据
+        queryUserData.value = {
+            id: userData.id,
+            date: userData.date1,
+            name: userData.name,
+            star: userData.star,
+            status: userData.status,
+            trait: userData.trait,
+            phone: userData.phone,
+        };
+        console.log(queryUserData.value);
+    } catch (error) {
+        console.error('查询失败:', error);
+    }
+};
+
+const updateUserData = async (userId) => {
+    try {
+        const response = await axios.put(`http://localhost:3001/api/updateuserdata/${userId}`, {
+            name: tableData.value.name,
+            phone: tableData.value.phone,
+            date: tableData.value.date,
+            star: tableData.value.star,
+            status: tableData.value.status,
+            trait: tableData.value.trait,
+        });
+        console.log('更新成功:', response.data);
+        // 你可以在这里刷新数据或做其他处理
+    } catch (error) {
+        console.error('更新失败:', error);
+    }
+};
+
 const size = ref('default'); // 默认大小
 const labelPosition = ref('left'); // 默认标签位置
 const ruleFormRef = ref();
@@ -709,6 +833,10 @@ const dataset = ref([
     }
 ]);
 
+// 在组件挂载时获取数据
+onMounted(() => {
+    fetchData();
+});
 </script>
 
 <style lang="scss" scoped>

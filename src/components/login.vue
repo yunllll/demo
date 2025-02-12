@@ -75,6 +75,8 @@ const login = async () => {
             username: user.username,
             password: user.password
         });
+        const userRole = response.data.role;
+        localStorage.setItem('userRole', userRole);
 
         // 登录成功，显示消息
         ElMessage.success(response.data.message);
