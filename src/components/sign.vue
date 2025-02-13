@@ -3,7 +3,7 @@
         style="height: 100vh; overflow: hidden;display: flex;justify-content: center;align-items: center;background-color: #cecece;">
         <div style="display: flex;background-color: white;width: 50%;border-radius: 5px;overflow: hidden;">
             <div style="flex: 1;">
-                <img src="@/assets/AnKe.jpg" alt="" style="width: 100%;">
+                <img src="@/assets/logo.png" alt="" style="width: 100%;">
             </div>
             <div style="flex: 1;display: flex;align-items: center;justify-content: center;">
                 <el-form :model="user" style="width: 80%;position: relative;">
@@ -88,7 +88,7 @@ const register = async () => {
         // 注册成功，显示消息
         ElMessage.success(response.data.message);
         // 重定向到登录页面
-        $router.push('/login');
+        $router.push('/index');
     } catch (error) {
         if (error.response) {
             // 处理错误响应

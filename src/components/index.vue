@@ -194,17 +194,17 @@
                     </el-table>
                     <div>
                         <h1>用户信息</h1>
-                        <input v-model="tableData.id" placeholder="输入用户ID" />
-                        <button @click="fetchUserData(tableData.id)">查询用户</button>
+                        <el-input size="medium" v-model="tableData.id" placeholder="输入用户ID"/>
+                        <el-button @click="fetchUserData(tableData.id)">查询用户</el-button>
                         <div v-if="queryUserData.id">
                             <h2>用户信息</h2>
-                            <p>姓名: <input v-model="tableData.name" /></p>
-                            <p>电话: <input v-model="tableData.phone" /></p>
-                            <p>日期: <input v-model="tableData.date" /></p>
-                            <p>星级: <input v-model="tableData.star" /></p>
-                            <p>状态: <input v-model="tableData.status" /></p>
-                            <p>特征: <input v-model="tableData.trait" /></p>
-                            <button @click="updateUserData(queryUserData.id)">更新用户</button>
+                            <p>姓名: <el-input v-model="tableData.name" size="medium" /></p>
+                            <p>电话: <el-input v-model="tableData.phone" size="medium" /></p>
+                            <p>日期: <el-input v-model="tableData.date" size="medium" /></p>
+                            <p>星级: <el-input v-model="tableData.star" size="medium" /></p>
+                            <p>状态: <el-input v-model="tableData.status" size="medium" /></p>
+                            <p>特征: <el-input v-model="tableData.trait" size="medium" /></p>
+                            <el-button @click="updateUserData(queryUserData.id)">更新用户</el-button>
                         </div>
                     </div>
 
